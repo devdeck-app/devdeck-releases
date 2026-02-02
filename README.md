@@ -23,7 +23,7 @@ DevDeck Server facilitates communication between the DevDeck app and your comput
 
 ```bash
 brew tap devdeck-app/homebrew-devdeck-server
-brew install devdeck-server
+brew install --cask devdeck-server
 ```
 
 ## Running
