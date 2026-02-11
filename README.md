@@ -122,6 +122,18 @@ form_model = ""         # Optional; cheaper model for form field analysis
 host = ""               # Ollama only (default: http://localhost:11434)
 ```
 
+**Auto-injected "AI Command" button:**
+When `[ai]` is configured, an "AI Command" workflow button automatically appears on your main deck. Tap it to generate commands, contexts, or workflows from natural language prompts.
+
+**Customization:**
+To change the button's name or icon, define it manually:
+```toml
+[workflows.generate_command]
+name = "My AI"
+icon = "sparkles"
+inputs = ["prompt"]
+```
+
 **Provider defaults:**
 - **Anthropic**: `claude-sonnet-4-20250514` — requires `ANTHROPIC_API_KEY` env var
 - **OpenAI**: `gpt-4o` — requires `OPENAI_API_KEY` env var
