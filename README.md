@@ -118,6 +118,7 @@ Generate commands, contexts, and workflows from natural language using the Web U
 [ai]
 provider = "anthropic"  # "anthropic" (default), "openai", or "ollama"
 model = ""              # Optional; uses provider default if omitted
+form_model = ""         # Optional; cheaper model for form field analysis
 host = ""               # Ollama only (default: http://localhost:11434)
 ```
 
@@ -125,6 +126,8 @@ host = ""               # Ollama only (default: http://localhost:11434)
 - **Anthropic**: `claude-sonnet-4-20250514` — requires `ANTHROPIC_API_KEY` env var
 - **OpenAI**: `gpt-4o` — requires `OPENAI_API_KEY` env var
 - **Ollama**: `qwen2.5-coder:7b` — local, no API key needed
+
+`form_model` uses a separate (typically cheaper/faster) model for `fill_form` field analysis. Falls back to the main model if not set.
 
 **Debug AI generation:**
 
@@ -179,8 +182,62 @@ timeout = 10
 continue_on_error = true
 ```
 
-**Step types:** `open_url`, `run_command` (default 30s timeout), `delay` (seconds).
+**Step types:**
+
+| Type | Description |
+|------|-------------|
+| `open_url` | Opens URL in browser. Routes through extension when connected. |
+| `run_command` | Executes shell command (default 30s timeout) |
+| `delay` | Pauses execution (seconds) |
+| `click_element` | Clicks DOM element by CSS selector (requires extension) |
+| `fill_input` | Fills single input by CSS selector (requires extension) |
+| `fill_form` | Fills form fields by semantic name (requires extension) |
+
 Template variables use `{{inputName}}` syntax.
+
+#### Form Filling (`fill_form`)
+
+Fills web forms using semantic field names — no CSS selectors needed. Uses a hybrid approach: heuristic matching first (aria-labels, name attributes, placeholders), with AI fallback for ambiguous fields.
+
+```toml
+# Single-field: auto-submits by default
+[workflows.ask-gemini]
+name = "Ask Gemini"
+icon = "sparkles"
+inputs = ["query"]
+
+[[workflows.ask-gemini.steps]]
+type = "open_url"
+url = "https://gemini.google.com/"
+
+[[workflows.ask-gemini.steps]]
+type = "fill_form"
+[workflows.ask-gemini.steps.fields]
+prompt = "{{query}}"
+
+# Multi-field: does NOT auto-submit by default
+[workflows.contact-form]
+name = "Contact Form"
+icon = "envelope"
+inputs = ["name", "email", "message"]
+
+[[workflows.contact-form.steps]]
+type = "open_url"
+url = "https://example.com/contact"
+
+[[workflows.contact-form.steps]]
+type = "fill_form"
+auto_submit = false
+[workflows.contact-form.steps.fields]
+name = "{{name}}"
+email = "{{email}}"
+message = "{{message}}"
+```
+
+**`auto_submit` behavior:**
+- Not set → smart default: auto-submit single-field forms, skip for multi-field
+- `true` → always submit after filling
+- `false` → never submit
 
 ### Proxy / ngrok
 
@@ -219,7 +276,7 @@ store_output = true   # Enable storing command output (use with caution)
 
 ### Browser Extension
 
-The Chrome extension enables web app detection for context-aware switching and browser automation (click elements, fill forms):
+The Chrome extension enables web app detection for context-aware switching and browser automation (click elements, fill inputs, fill forms with semantic field mapping, navigate URLs):
 
 ```bash
 # Load as unpacked extension in Chrome → Extensions → Developer Mode
