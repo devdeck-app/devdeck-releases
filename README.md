@@ -20,6 +20,7 @@ DevDeck Server facilitates communication between the DevDeck app and your comput
 - **AI-powered command generation** (Anthropic, OpenAI, Ollama)
 - **Multi-step workflows** with templated inputs
 - **Browser automation** via Chrome extension
+- **Custom icons** — use your own PNG/JPEG icons alongside SF Symbols, with color tinting
 - **Proxy/ngrok support** for remote access
 
 ## Installation
@@ -60,20 +61,50 @@ The Generate tab includes a **Deck Simulator** — a live grid preview of your d
 
 Localhost-only, no authentication required.
 
-## TUI Generate Tab
+## TUI
 
-Tab **5** in the terminal UI provides the same AI generation flow without leaving the terminal.
+The terminal UI has five tabs: Dashboard, Logs, History, Settings, and Generate.
+
+### Global Shortcuts
+
+| Key | Action |
+|-----|--------|
+| `1`–`5` | Jump to tab |
+| `Tab` / `Shift+Tab` | Cycle tabs |
+| `?` | Toggle help overlay |
+| `o` | Open web UI in browser |
+| `q` / `Ctrl+C` | Quit |
+
+### Logs Tab
+
+| Key | Action |
+|-----|--------|
+| `a` | Toggle auto-scroll |
+| `d` / `i` / `w` / `e` | Filter by DEBUG / INFO / WARN / ERROR |
+| `c` | Clear filter (show all) |
+| `x` | Clear all logs |
+| `↑` `↓` / `j` `k` | Scroll |
+
+### History Tab
+
+| Key | Action |
+|-----|--------|
+| `↑` `↓` / `j` `k` | Move selection |
+| `r` | Refresh history |
+
+### Generate Tab
 
 **Flow:** type prompt → preview result → edit fields → save to config
 
 | Key | Action |
 |-----|--------|
-| `Enter` | Submit prompt |
+| `Enter` / `/` | Focus input |
+| `Enter` (focused) | Submit prompt |
 | `s` | Save generated command/context/workflow |
 | `e` | Toggle edit mode |
 | `r` | Regenerate with same prompt |
-| `Esc` | Cancel / discard preview |
-| `Tab` / `Shift+Tab` | Cycle editable fields |
+| `Esc` | Cancel / discard preview / unfocus input |
+| `Tab` / `Shift+Tab` | Cycle editable fields (in edit mode) |
 
 ## Configuration
 
@@ -105,10 +136,38 @@ description = "Launch Application"
 app = "Application Name"
 action = "open"
 icon = "icon-name"          # SF Symbol name (e.g., "terminal.fill", "gear")
+icon_color = "#007ACC"      # Optional: hex color for SF Symbol tinting
 type = "action"             # Or "context" for sub-commands
 context = "main"            # Or custom context name
 main = true                 # Show on main screen
 ```
+
+### Custom Icons
+
+Use your own PNG/JPEG images alongside SF Symbols:
+
+```toml
+[[commands]]
+description = "Company Deploy"
+icon = "custom:deploy-logo"
+icon_color = "#FF5733"
+type = "action"
+context = "main"
+main = true
+```
+
+Place image files in `~/.config/devdeck/icons/`:
+```
+~/.config/devdeck/icons/
+├── deploy-logo.png
+├── company-seal.jpg
+└── staging-env.png
+```
+
+- `custom:name` probes `name.png`, `name.jpg`, `name.jpeg` automatically
+- Allowed formats: PNG, JPEG only (max 512KB)
+- Icons are served via `http://<server>/icons/<filename>`
+- Changes to the icons directory trigger automatic reload
 
 ### AI Provider
 
