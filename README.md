@@ -200,6 +200,19 @@ inputs = ["prompt"]
 
 `form_model` uses a separate (typically cheaper/faster) model for `fill_form` field analysis. Falls back to the main model if not set.
 
+**Environment-aware generation:**
+- Scrapes real menu bar shortcuts via `menuctl` for accurate keyboard shortcut commands
+- Auto-detects available tools (browser extension, chrome-cli) to pick the best execution method
+- Falls back to web search when menu data is unavailable (Anthropic/OpenAI only)
+- Requires macOS Accessibility permission (same as context detection)
+
+**Method preferences:**
+```toml
+[ai]
+preferred_url_method = "auto"    # auto|extension|open|chrome-cli
+preferred_action_method = "auto" # auto|shortcut|applescript|cli
+```
+
 **Debug AI generation:**
 
 ```bash
@@ -363,6 +376,32 @@ priority = 60
 frontmost_bundle_ids = ["com.google.Chrome"]
 browser_url_patterns = ["*://github.com/*"]
 ```
+
+### Config Sync (Cloud Backup)
+
+Sync your config to DevDeck Hub for backup and multi-device support.
+
+```toml
+[sync]
+enabled = true
+```
+
+Device token is stored separately in `~/.config/devdeck/credentials.json` (never synced):
+
+```json
+{
+  "device_token": "tok-xxx"
+}
+```
+
+Hub URL defaults to `https://hub.devdeck.app`. Override with `DEVDECK_HUB_URL` envvar.
+
+**Behavior:**
+- **On startup:** pulls latest config from hub (newer-wins). Fresh installs always accept hub config.
+- **On config change:** pushes updated config to hub automatically.
+- The `[sync]` section is never overwritten by pull — stays local.
+- Pull errors are non-fatal (server continues with local config).
+- TUI shows sync status: pulling, syncing, synced, or error.
 
 ## Examples
 
