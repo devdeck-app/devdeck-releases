@@ -25,12 +25,27 @@ DevDeck Server facilitates communication between the DevDeck app and your comput
 
 ## Installation
 
+### Mac App (recommended)
+
+Installs the menu bar app, which bundles the server:
+
+```bash
+brew tap devdeck-app/homebrew-devdeck-server
+brew install --cask devdeck
+```
+
+Launch the app from Spotlight or `/Applications` — no `brew services` needed.
+
+### CLI (terminal only)
+
 ```bash
 brew tap devdeck-app/homebrew-devdeck-server
 brew install --cask devdeck-server
 ```
 
-## Running
+## Running (CLI)
+
+With the Mac app, just launch it — the steps below are for the `devdeck-server` CLI.
 
 Start manually:
 
