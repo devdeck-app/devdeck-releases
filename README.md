@@ -183,6 +183,7 @@ Place image files in `~/.config/devdeck/icons/`:
 - Allowed formats: PNG, JPEG only (max 512KB)
 - Icons are served via `http://<server>/icons/<filename>`
 - Changes to the icons directory trigger automatic reload
+- With [Config Sync](#config-sync-cloud-backup) enabled, custom icons sync across your paired devices automatically
 
 ### AI Provider
 
@@ -414,6 +415,7 @@ Hub URL defaults to `https://hub.devdeck.app`. Override with `DEVDECK_HUB_URL` e
 **Behavior:**
 - **On startup:** pulls latest config from hub (newer-wins). Fresh installs always accept hub config.
 - **On config change:** pushes updated config to hub automatically.
+- **Custom icons:** uploaded to the hub on config push and pulled down on startup, so each paired device ends up with the full icon set (hub-wins on conflict).
 - The `[sync]` section is never overwritten by pull — stays local.
 - Pull errors are non-fatal (server continues with local config).
 - TUI shows sync status: pulling, syncing, synced, or error.
