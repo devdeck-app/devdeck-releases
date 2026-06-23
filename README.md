@@ -74,6 +74,8 @@ Access the built-in web interface at `http://localhost:4242/app`.
 
 The Generate tab includes a **Deck Simulator** — a live grid preview of your deck layout that shows ghost buttons for unsaved commands before you commit them.
 
+**Editing commands:** Click any button in the Deck Simulator to edit it. Beyond the label, icon, and color, you can edit the command's full body in place — shell command, app, AppleScript, browser URL/selector, or script source. Script-backed commands load their source into a syntax-highlighted code editor (bash/JavaScript/Python/Ruby) with optional **Vim or Emacs keybindings**, and an **⤢ Expand** button opens the editor in a larger modal for comfortable editing.
+
 Localhost-only, no authentication required.
 
 ## TUI
